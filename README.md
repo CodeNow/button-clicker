@@ -2,7 +2,7 @@
 
 **Chrome extension to automate Runnable management**
 
-![icon_128.png](Beary Good)
+![Beary Good](icon_128.png)
 
 ### Actions
 

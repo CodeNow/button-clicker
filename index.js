@@ -157,7 +157,7 @@ buttonClicker.printAllInstancesAndGroupByDockerHost = function () {
       })
 }
 
-buttonClicke.rebuildAllInstances = function () {
+buttonClicker.rebuildAllInstances = function () {
   console.log('rebuildAllInstances not yet implemented')
   // inject('promisify')
   // inject('createBuildFromContextVersionId')
