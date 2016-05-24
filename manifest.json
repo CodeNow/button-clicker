@@ -7,7 +7,18 @@
     "128": "icon_128.png"
   },
   "content_scripts": [{
-    "matches": ["<all_urls>", "*://*runnable*"],
+    "matches": [
+      "*://*.runnable.com*",
+      "*://*.runnable.io*",
+      "*://*.runnableapp.com*",
+      "*://*.runnable-staging.com*",
+
+      "*://*.runnable-gamma.com*",
+      "*://*.runnable.ninja*",
+
+      "*://*.runnable-beta.com*",
+      "*://*.runnablecloud.com*"
+    ],
     "js": ["loader.js"],
     "all_frames": true,
     "run_at": "document_end",
