@@ -1,8 +1,16 @@
 # Runnable Button Clicker
 
-**Chrome extension to automate Runnable management**
+_Chrome extension to automate Runnable management_
 
 ![Beary Good](icon_128.png)
+
+### Setup
+
+1. Clone repo locally
+2. In Chrome go to "More Tools" > "Extenstion"
+3. Click on "Developer Mode"
+4. Click on "Load unpacked extension"
+5. Selected the parent directory for the repo you previously cloned
 
 ### Actions
 
