@@ -8,16 +8,16 @@
   },
   "content_scripts": [{
     "matches": [
-      "*://*.runnable.com*",
-      "*://*.runnable.io*",
-      "*://*.runnableapp.com*",
-      "*://*.runnable-staging.com*",
+      "*://*.runnable.com/*",
+      "*://*.runnable.io/*",
+      "*://*.runnableapp.com/*",
+      "*://*.runnable-staging.com/*",
 
-      "*://*.runnable-gamma.com*",
-      "*://*.runnable.ninja*",
+      "*://*.runnable-gamma.com/*",
+      "*://*.runnable.ninja/*",
 
-      "*://*.runnable-beta.com*",
-      "*://*.runnablecloud.com*"
+      "*://*.runnable-beta.com/*",
+      "*://*.runnablecloud.com/*"
     ],
     "js": ["loader.js"],
     "all_frames": true,
