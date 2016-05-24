@@ -1,13 +1,10 @@
-
-// Here You can type your custom JavaScript...
-// Here You can type your custom JavaScript...
-var inject = function (serviceName) {
+window.inject = function (serviceName) {
   var service =  angular.element(document.body).injector().get(serviceName);
   window[serviceName] = service;
   return service;
 };
 
-buttonClicker = {}
+window.buttonClicker = {}
 
 buttonClicker.getGithubOrgId = function (name) {
   inject('$http');
