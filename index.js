@@ -1,5 +1,3 @@
-console.log('Super Loaded....!')
-
 window.inject = function (serviceName) {
   var service =  angular.element(document.body).injector().get(serviceName);
   window[serviceName] = service;
