@@ -174,3 +174,8 @@ buttonClicker.rebuildAllInstances = function () {
           // })
       // })
 }
+
+buttonClicker.getCurrentUserId = function () {
+  inject('$rootScope')
+  return $rootScope.dataApp.data.orgs.models[0].attrs.id
+};

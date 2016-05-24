@@ -25,4 +25,4 @@ _Chrome extension to automate Runnable management_
 - `getInstancesByRepoAndBranchName`: Get all instances with a repo name and/or branch name
 - `getAllInstancesAndGroupByDockerHost`: Get all instances with a repo name and/or branch name
 - `rebuildAllInstances`: WIP
-
+- `getCurrentUserId`: Get Github ID for current org
