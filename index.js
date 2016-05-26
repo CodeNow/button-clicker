@@ -5,6 +5,7 @@ window.inject = function (serviceName) {
 };
 
 window.buttonClicker = {}
+window.bc = window.buttonClicker
 
 buttonClicker.getGithubOrgId = function (name) {
   inject('$http');
