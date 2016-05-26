@@ -102,17 +102,6 @@ buttonClicker.getInstancesByRepoAndBranchName = function (repoName, branchName) 
       })
 };
 
-buttonClicker.deleteInstances = function (repoName, branchName) {
-  inject('promisify')
-  inject('$q')
-  getInstancesByRepoAndBranchName(repoName, branchName)
-      .then((instances) => {
-          return $q.all(
-              instances.map((i) => promisify(i, 'destroy')())
-          );
-      })
-}
-
 buttonClicker.getAllInstancesAndGroupByDockerHost = function () {
   inject('keypather')
   var group = {}
@@ -126,6 +115,32 @@ buttonClicker.getAllInstancesAndGroupByDockerHost = function () {
               group[host].push(i)
           })
           return group
+      })
+}
+
+buttonClicker.getAllInstancesAndGroupByStatus = function () {
+  var group = {}
+  return getAllInstances()
+      .then((instances) => {
+          instances.forEach((i) => {
+              var s = i.status()
+              if (!group[s]) {
+                  group[s] = []
+              }
+              group[s].push(i)
+          })
+          return group
+      })
+}
+
+buttonClicker.deleteInstances = function (repoName, branchName) {
+  inject('promisify')
+  inject('$q')
+  getInstancesByRepoAndBranchName(repoName, branchName)
+      .then((instances) => {
+          return $q.all(
+              instances.map((i) => promisify(i, 'destroy')())
+          );
       })
 }
 
@@ -149,6 +164,19 @@ buttonClicker.printAllInstancesAndGroupByDockerHost = function () {
               str += group[hostName].map((i) => {
                   return ' / ' + i.attrs.name 
               }).join(' ')
+              res.push(str)
+          })
+          console.log(res.join('\n'))
+      })
+}
+
+buttonClicker.printAllInstancesAndGroupByStatus = function () {
+  getAllInstancesAndGroupByStatus()
+      .then(function (group) {
+          var res = []
+          Object.keys(group).forEach((s) => {
+              var str = "Status: " + s
+              str += " (" + group[s].length + ")"
               res.push(str)
           })
           console.log(res.join('\n'))
