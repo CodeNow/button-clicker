@@ -89,7 +89,7 @@ buttonClicker.getInstancesByRepoAndBranchName = function (repoName, branchName) 
   if (typeof repoName !== 'string') {
       throw new Error('`repoName` is required');
   }
-  return getAllInstances()
+  return bc.getAllInstances()
       .then((instances) => {
           return instances.filter((i) => {
               var acv = keypather.get(i, 'attrs.contextVersion.appCodeVersions[0]');
@@ -106,7 +106,7 @@ buttonClicker.getInstancesByRepoAndBranchName = function (repoName, branchName) 
 buttonClicker.getAllInstancesAndGroupByDockerHost = function () {
   inject('keypather')
   var group = {}
-  return getAllInstances()
+  return bc.getAllInstances()
       .then((instances) => {
           instances.forEach((i) => {
               var host = keypather.get(i,'attrs.container.dockerHost')
@@ -121,7 +121,7 @@ buttonClicker.getAllInstancesAndGroupByDockerHost = function () {
 
 buttonClicker.getAllInstancesAndGroupByStatus = function () {
   var group = {}
-  return getAllInstances()
+  return bc.getAllInstances()
       .then((instances) => {
           instances.forEach((i) => {
               var s = i.status()
@@ -137,7 +137,7 @@ buttonClicker.getAllInstancesAndGroupByStatus = function () {
 buttonClicker.deleteInstances = function (repoName, branchName) {
   inject('promisify')
   inject('$q')
-  getInstancesByRepoAndBranchName(repoName, branchName)
+  bc.getInstancesByRepoAndBranchName(repoName, branchName)
       .then((instances) => {
           return $q.all(
               instances.map((i) => promisify(i, 'destroy')())
@@ -150,13 +150,13 @@ buttonClicker.loginAsUser = function (accessToken) {
   inject('configAPIHost');
   console.log('configAPIHost', configAPIHost);
   return $http.post(
-      configAPIHost + '/auth/github/token', 
+      configAPIHost + '/auth/github/token',
       {accessToken: accessToken }
   );
 }
 
 buttonClicker.printAllInstancesAndGroupByDockerHost = function () {
-  getAllInstancesAndGroupByDockerHost()
+  bc.getAllInstancesAndGroupByDockerHost()
       .then(function (group) {
           var res = []
           Object.keys(group).forEach((hostName) => {
@@ -172,7 +172,7 @@ buttonClicker.printAllInstancesAndGroupByDockerHost = function () {
 }
 
 buttonClicker.printAllInstancesAndGroupByStatus = function () {
-  getAllInstancesAndGroupByStatus()
+  bc.getAllInstancesAndGroupByStatus()
       .then(function (group) {
           var res = []
           Object.keys(group).forEach((s) => {
