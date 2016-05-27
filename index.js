@@ -71,7 +71,24 @@ buttonClicker.deWhiteListOrg = function (orgName) {
     });
 };
 
-buttonClicker.getAllInstances = function () {
+let flts = {
+  running: (i) => i.status() === 'running',
+
+  crashed: (i) => i.status() === 'crashed',
+  buidlFailed: (i) => i.status() === 'buildFailed',
+  neverStarted: (i) => i.status() === 'neverStarted',
+  red: (i) => (flts.crashed(i) || flts.buildFailed(i) || flts.neverStarted(i)),
+
+  building: (i) => i.status() === 'building',
+  stopping: (i) => i.status() === 'stopping',
+  migrating: (i) => i.isMigrating(),
+  yellow: (i) => (flts.building(i) || flts.stopping(i) || flts.migrating(i)),
+
+  stopped: (i) => i.status() === 'stopped'
+}
+bc.filters = flts
+
+buttonClicker.getAllInstances = function (filterFunc) {
   inject('fetchUser')
   inject('$rootScope')
   inject('promisify')
@@ -80,6 +97,12 @@ buttonClicker.getAllInstances = function () {
       var name = $rootScope.dataApp.data.activeAccount.oauthName();
       return promisify(user, 'fetchInstances')({
           githubUsername: name
+      })
+      .then((instances) => {
+        if (typeof filterFunc !== 'function') {
+          return instances
+        }
+        return instances.filter(filterFunc)
       })
   })
 }
@@ -184,10 +207,10 @@ buttonClicker.printAllInstancesAndGroupByStatus = function () {
       })
 }
 
-buttonClicker.rebuildAllInstances = function () {
+buttonClicker.rebuildAllInstances = function (filterFunc) {
   inject('promisify')
   inject('createBuildFromContextVersionId')
-  return getAllInstances()
+  return getAllInstances(filterFunc)
       .then((is) => {
           is.forEach((i) => {
             return promisify(i.build, 'deepCopy')()
