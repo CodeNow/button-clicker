@@ -185,23 +185,22 @@ buttonClicker.printAllInstancesAndGroupByStatus = function () {
 }
 
 buttonClicker.rebuildAllInstances = function () {
-  console.log('rebuildAllInstances not yet implemented')
-  // inject('promisify')
-  // inject('createBuildFromContextVersionId')
-  // return getAllInstances()
-      // .then((is) => {
-          // is.forEach((i) => {
-              // return createBuildFromContextVersionId(i.attrs.contextVersion._id)
-                  // .then((build) => {
-                      // return promisify(build, 'build')({
-                         // message: 'manual',
-                        // noCache: true
-                      // })
-                  // })
-                  // .then(() => console.log('Success', i.attrs.name))
-                  // .catch((err) => console.log('Fail', i.attrs.name, err))
-          // })
-      // })
+  inject('promisify')
+  inject('createBuildFromContextVersionId')
+  return getAllInstances()
+      .then((is) => {
+          is.forEach((i) => {
+            return promisify(i.build, 'deepCopy')()
+                .then((newBuild) => {
+                  return promisify(newBuild, 'build')({ message: 'Manual Build', noCache: true })
+                })
+                .then((newBuild) => {
+                  return promisify(i, 'update')({ build: newBuild.id() })
+                })
+                .then(() => console.log('Success', i.attrs.name))
+                .catch((err) => console.log('Fail', i.attrs.name, err))
+          })
+      })
 }
 
 buttonClicker.getCurrentUserId = function () {
