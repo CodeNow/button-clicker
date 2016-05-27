@@ -210,7 +210,7 @@ bc.rebuildAllInstances = function (filterFunc) {
   inject('createBuildFromContextVersionId')
   return bc.getAllInstances(filterFunc)
       .then((is) => {
-        console.log('Instances Found:' is.length)
+        console.log('Instances Found:', is.length)
         is.forEach((i) => {
           return promisify(i.build, 'deepCopy')()
               .then((newBuild) => {
