@@ -4,10 +4,10 @@ window.inject = function (serviceName) {
   return service;
 };
 
-window.buttonClicker = {}
-window.bc = window.buttonClicker
+window.bc = {}
+window.buttonClicker = window.bc
 
-buttonClicker.getGithubOrgId = function (name) {
+bc.getGithubOrgId = function (name) {
   inject('$http');
   inject('configAPIHost');
   return $http({
@@ -15,13 +15,12 @@ buttonClicker.getGithubOrgId = function (name) {
     url: configAPIHost + '/github/orgs/' + name
   })
     .then(function (res) {
-      console.log('Id', res.data.id);
       return res.data;
     });
 };
 
 
-buttonClicker.deleteAllInvitations = function () {
+bc.deleteAllInvitations = function () {
   inject('fetchUser');
   inject('promisify');
   inject('fetchGithubOrgId');
@@ -37,7 +36,6 @@ buttonClicker.deleteAllInvitations = function () {
           })
           .then(function (invitations) {
             return $q.all(invitations.map(function (invite) {
-               console.log(invite.id());
                return promisify(user, 'destroyTeammateInvitation')(invite.id())
                   .then(() => console.log('Success'))
                   .catch(() => console.log('Failure'))
@@ -46,7 +44,7 @@ buttonClicker.deleteAllInvitations = function () {
   });
 };
 
-buttonClicker.whiteListOrg = function (orgName) {
+bc.whiteListOrg = function (orgName) {
   inject('configAPIHost');
   inject('$http');
   return $http({
@@ -59,7 +57,7 @@ buttonClicker.whiteListOrg = function (orgName) {
     });
 };
 
-buttonClicker.deWhiteListOrg = function (orgName) {
+bc.deWhiteListOrg = function (orgName) {
   inject('configAPIHost');
   inject('$http');
   return $http({
@@ -71,7 +69,7 @@ buttonClicker.deWhiteListOrg = function (orgName) {
     });
 };
 
-let flts = {
+const flts = {
   running: (i) => i.status() === 'running',
 
   crashed: (i) => i.status() === 'crashed',
@@ -88,7 +86,7 @@ let flts = {
 }
 bc.filters = flts
 
-buttonClicker.getAllInstances = function (filterFunc) {
+bc.getAllInstances = function (filterFunc) {
   inject('fetchUser')
   inject('$rootScope')
   inject('promisify')
@@ -107,7 +105,7 @@ buttonClicker.getAllInstances = function (filterFunc) {
   })
 }
 
-buttonClicker.getInstancesByRepoAndBranchName = function (repoName, branchName) {
+bc.getInstancesByRepoAndBranchName = function (repoName, branchName) {
   inject('keypather')
   if (typeof repoName !== 'string') {
       throw new Error('`repoName` is required');
@@ -126,7 +124,7 @@ buttonClicker.getInstancesByRepoAndBranchName = function (repoName, branchName) 
       })
 };
 
-buttonClicker.getAllInstancesAndGroupByDockerHost = function () {
+bc.getAllInstancesAndGroupByDockerHost = function () {
   inject('keypather')
   var group = {}
   return bc.getAllInstances()
@@ -142,7 +140,7 @@ buttonClicker.getAllInstancesAndGroupByDockerHost = function () {
       })
 }
 
-buttonClicker.getAllInstancesAndGroupByStatus = function () {
+bc.getAllInstancesAndGroupByStatus = function () {
   var group = {}
   return bc.getAllInstances()
       .then((instances) => {
@@ -157,7 +155,7 @@ buttonClicker.getAllInstancesAndGroupByStatus = function () {
       })
 }
 
-buttonClicker.deleteInstances = function (repoName, branchName) {
+bc.deleteInstances = function (repoName, branchName) {
   inject('promisify')
   inject('$q')
   bc.getInstancesByRepoAndBranchName(repoName, branchName)
@@ -168,7 +166,7 @@ buttonClicker.deleteInstances = function (repoName, branchName) {
       })
 }
 
-buttonClicker.loginAsUser = function (accessToken) {
+bc.loginAsUser = function (accessToken) {
   inject('$http')
   inject('configAPIHost');
   console.log('configAPIHost', configAPIHost);
@@ -178,7 +176,7 @@ buttonClicker.loginAsUser = function (accessToken) {
   );
 }
 
-buttonClicker.printAllInstancesAndGroupByDockerHost = function () {
+bc.printAllInstancesAndGroupByDockerHost = function () {
   bc.getAllInstancesAndGroupByDockerHost()
       .then(function (group) {
           var res = []
@@ -194,7 +192,7 @@ buttonClicker.printAllInstancesAndGroupByDockerHost = function () {
       })
 }
 
-buttonClicker.printAllInstancesAndGroupByStatus = function () {
+bc.printAllInstancesAndGroupByStatus = function () {
   bc.getAllInstancesAndGroupByStatus()
       .then(function (group) {
           var res = []
@@ -207,26 +205,27 @@ buttonClicker.printAllInstancesAndGroupByStatus = function () {
       })
 }
 
-buttonClicker.rebuildAllInstances = function (filterFunc) {
+bc.rebuildAllInstances = function (filterFunc) {
   inject('promisify')
   inject('createBuildFromContextVersionId')
-  return getAllInstances(filterFunc)
+  return bc.getAllInstances(filterFunc)
       .then((is) => {
-          is.forEach((i) => {
-            return promisify(i.build, 'deepCopy')()
-                .then((newBuild) => {
-                  return promisify(newBuild, 'build')({ message: 'Manual Build', noCache: true })
-                })
-                .then((newBuild) => {
-                  return promisify(i, 'update')({ build: newBuild.id() })
-                })
-                .then(() => console.log('Success', i.attrs.name))
-                .catch((err) => console.log('Fail', i.attrs.name, err))
-          })
-      })
+        console.log('Instances Found:' is.length)
+        is.forEach((i) => {
+          return promisify(i.build, 'deepCopy')()
+              .then((newBuild) => {
+                return promisify(newBuild, 'build')({ message: 'Manual Build', noCache: true })
+              })
+              .then((newBuild) => {
+                return promisify(i, 'update')({ build: newBuild.id() })
+              })
+              .then(() => console.log('Success', i.attrs.name))
+              .catch((err) => console.log('Fail', i.attrs.name, err))
+        })
+    })
 }
 
-buttonClicker.getCurrentUserId = function () {
+bc.getCurrentUserId = function () {
   inject('$rootScope')
   return $rootScope.dataApp.data.orgs.models[0].attrs.id
 };
