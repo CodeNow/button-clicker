@@ -73,7 +73,7 @@ const flts = {
   running: (i) => i.status() === 'running',
 
   crashed: (i) => i.status() === 'crashed',
-  buidlFailed: (i) => i.status() === 'buildFailed',
+  buildFailed: (i) => i.status() === 'buildFailed',
   neverStarted: (i) => i.status() === 'neverStarted',
   red: (i) => (flts.crashed(i) || flts.buildFailed(i) || flts.neverStarted(i)),
 
