@@ -155,7 +155,21 @@ bc.getAllInstancesAndGroupByStatus = function () {
       })
 }
 
-bc.deleteInstances = function (repoName, branchName) {
+bc.deleteAllInstances = function (filterFunc) {
+  if (!filterFunc) {
+    throw new Error('`filterFunc` must be passed')
+  }
+  inject('promisify')
+  inject('$q')
+  bc.getAllInstances(filterFunc)
+      .then((instances) => {
+          return $q.all(
+              instances.map((i) => promisify(i, 'destroy')())
+          );
+      })
+}
+
+bc.deleteInstancesByRepoAndBranchName = function (repoName, branchName) {
   inject('promisify')
   inject('$q')
   bc.getInstancesByRepoAndBranchName(repoName, branchName)
