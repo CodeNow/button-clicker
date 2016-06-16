@@ -155,6 +155,14 @@ bc.getAllInstancesAndGroupByStatus = function () {
       })
 }
 
+bc.getCurrentInstance = function () {
+  var $scope = angular.element($0).scope()
+  if (!$scope || !$scope.instance) throw new Error('No instance found in scope')
+  window.instance = $scope.instance
+  return $scope.instance
+}
+bc.i = bc.getCurrentInstance
+
 bc.deleteAllInstances = function (filterFunc) {
   if (!filterFunc) {
     throw new Error('`filterFunc` must be passed')
