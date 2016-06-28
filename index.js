@@ -228,23 +228,25 @@ bc.printAllInstancesAndGroupByStatus = function () {
 }
 
 bc.rebuildAllInstances = function (filterFunc) {
-  inject('promisify')
-  inject('createBuildFromContextVersionId')
   return bc.getAllInstances(filterFunc)
       .then((is) => {
         console.log('Instances Found:', is.length)
-        is.forEach((i) => {
-          return promisify(i.build, 'deepCopy')()
-              .then((newBuild) => {
-                return promisify(newBuild, 'build')({ message: 'Manual Build', noCache: true })
-              })
-              .then((newBuild) => {
-                return promisify(i, 'update')({ build: newBuild.id() })
-              })
-              .then(() => console.log('Success', i.attrs.name))
-              .catch((err) => console.log('Fail', i.attrs.name, err))
-        })
+        is.forEach((i) => bc.rebuildInstance(i))
     })
+}
+
+bc.rebuildInstance = function (i) {
+ inject('promisify')
+ inject('createBuildFromContextVersionId')
+ return promisify(i.build, 'deepCopy')()
+    .then((newBuild) => {
+      return promisify(newBuild, 'build')({ message: 'Manual Build', noCache: true })
+    })
+    .then((newBuild) => {
+      return promisify(i, 'update')({ build: newBuild.id() })
+    })
+    .then(() => console.log('Success', i.attrs.name))
+    .catch((err) => console.log('Fail', i.attrs.name, err))
 }
 
 bc.getCurrentUserId = function () {
