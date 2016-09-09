@@ -18,6 +18,7 @@ bc.getGithubOrgId = function (name) {
       return res.data;
     });
 };
+/// tadsf
 
 
 bc.deleteAllInvitations = function () {
