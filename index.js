@@ -253,3 +253,24 @@ bc.getCurrentUserId = function () {
   inject('$rootScope')
   return $rootScope.dataApp.data.orgs.models[0].attrs.id
 };
+
+bc.createSetFunction = function (defaultOpts) {
+  return function (instance, opts) {
+    inject('promisify')
+    inject('$q')
+    return $q.when()
+      .then(function () {
+        if (!instance) {
+          return bc.getCurrentInstance()
+        }
+        return instance
+      })
+      .then(function (instance) {
+        if (!instance) throw new Error('No instnace specified')
+        promisify(instance, 'update')(Object.assign(opts || {}, defaultOpts))
+      })
+  }
+}
+
+bc.disableAutoFork = bc.createSetFunction({ shouldNotAutofork: true })
+bc.enableAutoFork = bc.createSetFunction({ shouldNotAutofork: false })
