@@ -169,7 +169,7 @@ bc.deleteAllInstances = function (filterFunc) {
   }
   inject('promisify')
   inject('$q')
-  bc.getAllInstances(filterFunc)
+  return bc.getAllInstances(filterFunc)
       .then((instances) => {
           return $q.all(
               instances.map((i) => promisify(i, 'destroy')())
