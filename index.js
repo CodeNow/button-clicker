@@ -277,11 +277,13 @@ bc.enableAutoFork = bc.createSetFunction({ shouldNotAutofork: false })
 
 bc.resetForAha = function () {
   inject('ahaGuide')
-  return bc.deleteAllInstances(() => true)
+  return ahaGuide.resetGuide();
   .then(() => {
-     return ahaGuide.resetGuide();
+    return bc.deleteAllInstances(() => true)
   })
   .then(() => {
-    location.reload();
+    setTimeout(function () {
+      location.reload();
+    }, 100);
   })
 };
